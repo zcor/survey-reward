@@ -7,7 +7,7 @@ A token reward distribution for participants in the Big Crypto Survey (https://c
 ### Check Your Eligibility
 
 1. Visit Fraxscan and connect your wallet
-2. Go to the contract: [contract_address]
+2. Go to the contract: [0xe89181b79df4be6a77901331f473e05c43329770](https://fraxscan.com/address/0xe89181b79df4be6a77901331f473e05c43329770#readContract)
 3. Under "Read Contract", find the `eligible_addresses` function
 4. Enter your wallet address to check if you're eligible for the claim
 
@@ -16,14 +16,14 @@ A token reward distribution for participants in the Big Crypto Survey (https://c
 If you're eligible, you can claim your tokens in two ways:
 
 #### Option 1: Through Fraxscan
-1. Visit the contract on Fraxscan: [contract_address]
+1. Visit the contract on Fraxscan: [0xe89181b79df4be6a77901331f473e05c43329770](https://fraxscan.com/address/0xe89181b79df4be6a77901331f473e05c43329770#writeContract)
 2. Connect your wallet
-3. Under "Write Contract", click "claim"
+3. Under "Write Contract", click `claim`
 4. Confirm the transaction in your wallet
 
 #### Option 2: Direct Contract Interaction
 ```vyper
-// Call the claim function from an eligible address
+# Call the claim function from an eligible address
 function claim() external
 ```
 
@@ -43,16 +43,16 @@ This contract implements a token distribution system for survey participants, fe
 
 ```vyper
 claim() external
-    // Allows eligible addresses to claim their reward tokens
+    # Allows eligible addresses to claim their reward tokens
 
 claim_for(addr: address) external
-    // Allows claiming on behalf of eligible addresses
+    # Allows claiming on behalf of eligible addresses
 
 add_address(addr: address) external
-    // Owner function to add eligible addresses
+    # Owner function to add eligible addresses
 
 remove_address(addr: address) external
-    // Owner function to remove addresses from eligibility
+    # Owner function to remove addresses from eligibility
 ```
 
 ### Architecture
@@ -94,18 +94,22 @@ pytest tests/
 #### Testing
 The contract includes comprehensive test coverage:
 - Unit tests for core functionality
-- Integration tests for token interactions
-- Security tests for access control
-- Fuzzing tests for edge cases
+- Hypothesis testing
+
+![image](https://github.com/user-attachments/assets/59ae06d9-8d2e-4855-8e90-790d0d4607c0)
+
+Gas Profile:
+
+![image](https://github.com/user-attachments/assets/9474f435-99d7-47c6-a392-3923f4aa61cc)
+
+Coverage:
+
+![image](https://github.com/user-attachments/assets/489ff717-133f-4dfd-9074-69d5318b76e8)
+
 
 ### Deployment
 
 This contract is deployed on:
-- Fraxtal Mainnet: [contract_address]
-- Token Contract: [token_address]
-
-### Parameters
-
-- Reward Amount: [X] tokens per claim
-- Token: [TOKEN_NAME]([TOKEN_SYMBOL])
-- Owner: [OWNER_ADDRESS]
+- Fraxtal Mainnet: [0xe89181b79df4be6a77901331f473e05c43329770](https://fraxscan.com/address/0xe89181b79df4be6a77901331f473e05c43329770#code)
+- Token Contract: [$SQUID](https://fraxscan.com/address/0x6e58089d8E8f664823d26454f49A5A0f2fF697Fe)
+- Reward Amount: 2000 tokens per claim
