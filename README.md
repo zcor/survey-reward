@@ -15,7 +15,7 @@ A token reward distribution for participants in the Big Crypto Survey (https://c
 
 If you're eligible, you can claim your tokens in two ways:
 
-#### Option 1: Through Etherscan
+#### Option 1: Through Fraxscan
 1. Visit the contract on Fraxscan: [contract_address]
 2. Connect your wallet
 3. Under "Write Contract", click "claim"

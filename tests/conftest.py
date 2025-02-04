@@ -22,6 +22,7 @@ def token(owner):
     contract = boa.load_partial("contracts/mocks/MockToken.vy")
     with boa.env.prank(owner):
         token = contract.deploy("Test Token", "TEST", 18)
+
         # Mint initial supply to owner
         token._mint_for_testing(owner, 1_000_000 * 10**18)
     return token
@@ -37,6 +38,7 @@ def survey(owner, token, reward_amount):
     contract = boa.load_partial("contracts/SurveyAirdrop.vy")
     with boa.env.prank(owner):
         instance = contract.deploy(token.address, reward_amount)
+
         # Fund contract
         token.transfer(instance.address, reward_amount * 10)
     return instance

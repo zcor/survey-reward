@@ -1,10 +1,41 @@
 # @version 0.4.0
 
 """
-@title Survey Participants
+@title Big Crypto Poll Reward Distributort
 @license MIT
 @author crv.mktcap.eth
-@notice Thanks to users for participating in the Big Crypto Survey https://curve.substack.com/p/big-crypto-poll-results
+@notice Details: https://curve.substack.com/p/big-crypto-poll-results
+
+         #################
+       #####################++++
+     ##################+++++++++++++
+    +###############++++++++++++++++++++
+   ++###############+++++++++++++++++++++++
+  +++###############++++++++++++++++++++++++++
+ +++++###############+++++++-----++--+++++++++++
+ +++++###############++---------------------++++++
+ -+++++##############++-----------------------------
+--+++++++############++------------------------------
+---+++++++##########++++------------------------------
+---+++++++++++++++++++++-------------------------------
+----++++++++++++++++++++-------------------------------
+-----+++++++++++++++++++-------------------------------
+---------------+++++++++-------------------------------
+------------------+++++--------------------------------
+-------------------------------------------------------
+ ------------------------------------------------------
+ -----------------------------------------------------
+ --------------------------------------------------+
+ +---------------------------------------------++
+  +--------------------------------------+++
+   +---------++++++++----------+++++
+   ++++++++++++++++++----+++++
+    ++++++++++++++++-----+
+     ++++++++++++++++++++
+      #+++++++++++++++++
+       ########++++++++
+        ##############
+          ##########
 """
 
 from ethereum.ercs import IERC20
@@ -12,9 +43,10 @@ from ethereum.ercs import IERC20
 import ownable_2step as ownable
 import pausable
 
-# ============================================================================================
-# Modules
-# ============================================================================================
+
+# ================================================================== #
+# ⚙️ Modules
+# ================================================================== #
 
 initializes: ownable
 exports: (
@@ -32,35 +64,43 @@ exports: (
 )
 
 
-# ============================================================================================
-# Events
-# ============================================================================================
+# ================================================================== #
+# 📣 Events
+# ================================================================== #
 
 event Claim:
     user: address
     value: uint256
 
 
-# ============================================================================================
-# Storage
-# ============================================================================================
+# ================================================================== #
+# 💾 Storage
+# ================================================================== #
 
 reward_token: public(IERC20)
 reward_amount: public(uint256)
-
 eligible_addresses: public(HashMap[address, bool])
 
-# ============================================================================================
-# Constructor
-# ============================================================================================
+
+# ================================================================== #
+# 🚧 Constructor
+# ================================================================== #
 
 @deploy
 def __init__(reward_token: IERC20, reward_amount: uint256):
+    assert (
+        reward_amount > 0 and reward_amount <= max_value(uint256) // 2
+    ), "!amount"
+
     ownable.__init__()
     pausable.__init__()
     self.reward_token = reward_token
     self.reward_amount = reward_amount
 
+
+# ================================================================== #
+# ✍️ Write Functions
+# ================================================================== #
 
 @external
 def claim():
@@ -70,38 +110,19 @@ def claim():
     self._claim(msg.sender)
 
 
-# ============================================================================================
-# Write Functions
-# ============================================================================================
-
-
 @external
 def claim_for(addr: address):
     """
     @notice Allows whitelisted addresses to withdraw tokens
+    @param addr Eligible address for claim
     """
+    # ownable._check_owner()
     self._claim(addr)
 
 
-@internal
-def _claim(_user: address):
-    pausable._check_unpaused()
-    assert self.eligible_addresses[_user], "!address"
-    assert (
-        staticcall self.reward_token.balanceOf(self) >= self.reward_amount
-    ), "!balance"
-    self.eligible_addresses[_user] = False
-
-    # Transfer tokens to the caller
-    assert extcall self.reward_token.transfer(
-        _user, self.reward_amount
-    ), "!transfer"
-    log Claim(_user, self.reward_amount)
-
-
-# ============================================================================================
-# Admin Functions
-# ============================================================================================
+# ================================================================== #
+# 👑 Admin Functions
+# ================================================================== #
 
 @external
 def add_address(addr: address):
@@ -134,3 +155,25 @@ def withdraw_remaining(_token: IERC20):
     amount: uint256 = staticcall _token.balanceOf(self)
     assert amount > 0, "!balance"
     assert extcall _token.transfer(msg.sender, amount), "!transfer"
+
+
+# ================================================================== #
+# 🏠 Internal Functions
+# ================================================================== #
+
+@internal
+def _claim(_user: address):
+    pausable._check_unpaused()
+    assert self.eligible_addresses[_user], "!address"
+
+    _amount: uint256 = self.reward_amount
+    _balance: uint256 = staticcall self.reward_token.balanceOf(self)
+    assert _balance >= _amount, "!balance"
+
+    # Update state before transfer
+    self.eligible_addresses[_user] = False
+
+    # Transfer tokens to the caller
+    assert extcall self.reward_token.transfer(_user, _amount), "!transfer"
+
+    log Claim(_user, self.reward_amount)
