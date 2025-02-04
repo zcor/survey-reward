@@ -97,6 +97,7 @@ def __init__(reward_token: IERC20, reward_amount: uint256):
     self.reward_token = reward_token
     self.reward_amount = reward_amount
 
+
 # ================================================================== #
 # 👀 View Functions
 # ================================================================== #
