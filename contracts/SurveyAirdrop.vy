@@ -1,7 +1,7 @@
 # @version 0.4.0
 
 """
-@title Big Crypto Poll Reward Distributort
+@title Big Crypto Poll Reward Distributor
 @license MIT
 @author crv.mktcap.eth
 @notice Details: https://curve.substack.com/p/big-crypto-poll-results
@@ -96,6 +96,22 @@ def __init__(reward_token: IERC20, reward_amount: uint256):
     pausable.__init__()
     self.reward_token = reward_token
     self.reward_amount = reward_amount
+
+# ================================================================== #
+# 👀 View Functions
+# ================================================================== #
+
+@external
+@view
+def pending_claim_amount(addr: address) -> uint256:
+    """
+    @notice Pending claim amount
+    @param addr Address to check
+    @return Amount of tokens received on claim
+    """
+    if self.eligible_addresses[addr]:
+        return self.reward_amount
+    return 0
 
 
 # ================================================================== #
